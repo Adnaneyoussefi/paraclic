@@ -1,0 +1,60 @@
+{% extends 'proprietaire/base.html.twig' %}
+{% block title %}Accueil{% endblock %}
+{% block nav %}{% endblock %}
+{% block body %}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" />
+       <div class="site-section">
+            <div class="container">
+            <div style="width :65%">
+                  <canvas id="bar-chart" width="800" height="450"></canvas>       
+            </div>
+            </div>
+            <div style="width :100%;  position: absolute; left: 70%; line-height: 150%; top:200px;">
+           
+                      <div class="row">
+                        <div class="col-md-3">
+                          <div class="card-counter primary">
+                            <i class="fa fa-cubes"></i>
+                            <span class="count-numbers">{{produit}}</span>
+                            <span class="count-name">Produit</span>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-md-3">
+                          <div class="card-counter info">
+                            <i class="fa  fa-gift"></i>
+                            <span class="count-numbers">{{vente}}</span>
+                            <span class="count-name">Commande</span>
+                          </div>
+                        </div>
+                      </div>
+                      
+            </div>
+          <script>
+          new Chart(document.getElementById("bar-chart"), {
+              type: 'bar',
+              data: {
+                labels: ["Janvier", "Fevrier", "Mars", "Avril","Mai", "Juin","Juillet","Aout","Septembre","Octobre","Novembre","Decembre"],
+                datasets: [
+                  {
+                    label: "commande",
+                    backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850","#FF7F50","#FF00FF","#DB7093","#40E0D0","#FFFF00","#BDB76B"],
+                    data: [{% for  p in p %}
+                           {{p}},
+                       {% endfor %}]
+                  }
+                ]
+              },
+              options: {
+                legend: { display: false },
+                title: {
+                  display: true,
+                  text: 'Nombre des commandes par mois'
+                }
+              }
+          });
+          </script>
+{% endblock %}

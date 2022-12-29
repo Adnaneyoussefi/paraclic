@@ -1,0 +1,47 @@
+{% extends 'admin/base.html.twig' %}
+{% block title %}Réclamations des clients{% endblock %}
+
+{% block body %}
+<style>
+.icons8-poubelle{
+  position:absolute;
+  top:15px;
+  right:50px;
+}
+</style>
+<br>
+<center><h2> Reclamations </h2></center>
+<br>
+  {% for message in app.flashes('success') %}
+    <center><div class="alert alert-success alert-dismissible fade show" role="success">
+        {{ message }}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+        </div></center>
+        {% endfor %}
+{% for reclamation in page %}
+<div class="card">
+  <div class="card-header">
+    <h4>Titre du reclamation : {{reclamation.sujet}}</h4>
+<a href="{{ path('list_reclamation_client_remove',{'id':reclamation.id})}}" class="icons8-poubelle" onclick="return confirm('Tu es sure de vouloir supprimer cette reclamation ?')"></a>
+  </div>
+  <div class="card-body">
+    <blockquote class="blockquote mb-0">
+      <p>Message : {{reclamation.message}}</p>
+      <footer class="blockquote-footer">Emetteur : {{reclamation.user.nom}} {{reclamation.user.prenom}} </footer>
+      <footer class="blockquote-footer">Email : {{reclamation.user.email}} </footer>
+
+
+    </blockquote>
+  </div> 
+</div>
+
+{% endfor %}
+<br>
+<div class:"navigation">
+              {{ knp_pagination_render(page)}}
+</div>
+
+
+
+{% endblock %}

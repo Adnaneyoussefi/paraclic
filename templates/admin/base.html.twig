@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>{% block title %}{% endblock %}</title>
+        <link href="https://fonts.googleapis.com/css?family=Rubik:400,700|Crimson+Text:400,400i" rel="stylesheet">
+        <link rel="stylesheet" href="{{ asset('fonts/icomoon/style.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}"> 
+        <link rel="stylesheet" href="{{ asset('css/magnific-popup.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/jquery-ui.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/owl.carousel.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/owl.theme.default.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/aos.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+        
+        {% block stylesheets %}
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+        {% endblock %}
+        </head>
+        <body>
+        <div class="site-wrap">
+          <div class="site-navbar py-2">
+
+            <div class="container">
+              <div class="d-flex align-items-center justify-content-between">
+                <div class="logo">
+                  <div class="site-logo">
+                    <a href="{{path('home_admin')}}">  <img src="{{asset('images/logosite.png')}}" alt="" style="max-height:50px"/></a>
+                  </div>
+                </div>
+                
+                <div class="main-nav d-none d-lg-block">
+                  <nav class="site-navigation text-right text-md-center" role="navigation">
+                    <ul class="site-menu js-clone-nav d-none d-lg-block">
+                      <li class="{{ app.request.get('_route') == 'home_admin' ? 'active' }}"><a href="{{path('home_admin')}}" class="hyper">Accueil</a></li>       
+                      <li class="{{ app.request.get('_route') == 'listpharmacie_admin' ? 'active' }}"><a href="{{path('listpharmacie_admin')}}" class="hyper">tableau Parapharmacie</a></li>       
+                      <li class="{{ app.request.get('_route') == 'listclient_admin' ? 'active' }}"><a href="{{path('listclient_admin')}}" class="hyper">tableau client</a></li>
+                      <li class="{{ app.request.get('_route') == 'categorie_index' ? 'active' }}"><a href="{{path('categorie_index')}}" class="hyper">Catégories</a></li>       
+                    </ul>
+                  </nav>
+                </div>
+
+                <div class="site-navigation">
+                  <ul class="site-menu">
+                  <li><a href="#" class="site-menu-toggle js-menu-toggle ml-3 d-inline-block d-lg-none"><span
+                              class="icon-menu"></span>
+                          </a></li>
+                  <li class="has-children">
+                    <a>{{app.user.nom}} </a>
+                    <ul class="dropdown">
+                      <li><a href="{{path('parametres_admin')}}">Paramétres</a></li>
+                      <li><a href="{{path('admin_logout')}}">Déconnexion</a></li>
+                    </ul>
+                  </li>
+                  </ul>
+
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="bg-light py-3">
+          <div class="container">
+            <div class="row">
+              <div class="col-md-12 mb-0">
+                <a href="{{path('home_admin')}}">Accueil</a> <span class="mx-2 mb-0">/</span>
+                <strong class="text-black">{{ pagetitle}}</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+  
+    {% block body %} {% endblock %}
+         <script src="{{ asset('js/jquery-3.3.1.min.js') }}"></script>
+            <script src="{{asset('js/jquery-ui.js') }}"></script>
+            <script src="{{asset('js/popper.min.js') }}"></script>
+            <script src="{{asset('js/bootstrap.min.js') }}"></script>
+            <script src="{{asset('js/owl.carousel.min.js') }}"></script>
+            <script src="{{asset('js/jquery.magnific-popup.min.js') }}"></script>
+            <script src="{{asset('js/aos.js') }}"></script>
+            <script src="{{asset('js/main.js') }}"></script>
+
+    {% block javascripts %}
+      {% endblock %}
+  
+       </body>
+       </html>

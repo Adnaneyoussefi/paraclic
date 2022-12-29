@@ -1,0 +1,86 @@
+{% extends 'proprietaire/base.html.twig' %}
+{% block title %}Commande{% endblock %}
+{% block body %}
+<div class="site-section">
+    <div class="container">
+        {% for message in app.flashes('success') %}
+    <center><div class="alert alert-success alert-dismissible fade show" role="success">
+        {{ message }}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+        </div></center>
+        {% endfor %}
+        <table class="table table-bordered">
+            <thead>
+                <tr class="table-active">
+                    <td>Description</td>
+                    <td>Adresse Livraison</td>
+                    <td>Prix total</td>
+                    <td>Action</td>
+                    <td>Status</td>
+                </tr>  
+            </thead>
+        {% if commandes %}
+        {% for commande in page %}
+            <tbody>
+                <tr>
+                    <td colspan="5"><strong>No commande: {{ commande.id }}</strong> <span class="text-muted">{{ commande.date | date('d/m/Y') }}</span></td>
+                </tr>
+                <tr>
+                    <td colspan="5"><span class="text-primary">Email client :</span> {{ commande.client.user.email }}
+                    </td>
+                </tr>
+            </tbody>
+            <tbody>
+            {% for d in commande.produits %}   
+                <tr>
+                    <td>
+                        <img src={{ asset('images/' ~ d.produit.image) }} alt="Image" style="width: 120px;">
+                        <div class="d-inline-block">
+                        <div><strong>{{ d.produit.nom }}</strong></div>
+                        <div><span style="color:#999">QTE</span> {{ d.quantite }}</div>
+                        <div><span style="color:#999">Prix unitaire</span> {{ d.produit.prixtva + d.produit.prixht }} Dhs</div>
+                    </td>
+                    {% if loop.first %}
+                    <td rowspan={{commande.produits|length}} style="max-width: 390px">
+                        <div class="d-table-row"><span style="color:#999" class="d-table-cell pr-2">Nom complet:</span> {{ commande.nom }} {{ commande.prenom }}</div>
+                        <div class="d-table-row"><span style="color:#999" class="d-table-cell pr-2">Tel:</span> {{ commande.client.tel }}</div>
+                        <div class="d-table-row"><span style="color:#999" class="d-table-cell pr-2">Adresse de réception:</span> {{ commande.adresselivraison }}</div>
+                        <div class="d-table-row"><span style="color:#999" class="d-table-cell pr-2">Ville:</span> {{ commande.ville }}</div>
+                        <div class="d-table-row"><span style="color:#999" class="d-table-cell pr-2">Code postal:</span> {{ commande.codepostal }}</div>
+                    </td>
+                    {% endif %}
+                    <td><strong>{{ (d.produit.prixtva + d.produit.prixht) * d.quantite }} Dhs</strong></td>
+                    <td>
+                        <a href="{{ path('commande_proprietaire_livré',{'id':d.id})}}" class="btn btn-outline-primary btn-sm d-block mb-2" style="width: 100px" onclick="return confirm('Tu es sure que cette commande est livré ?')">Livrer</a>
+                        <a href="{{ path('commande_proprietaire_encours',{'id':d.id})}}" class="btn btn-outline-info btn-sm d-block mb-2" style="width: 100px" onclick="return confirm('Tu es sure que cette commande est en cours de livraison ?')">En cours</a>
+                        <a href="{{ path('commande_proprietaire_annuler',{'id':d.id})}}" class="btn btn-outline-warning btn-sm d-block mb-2" style="width: 100px" onclick="return confirm('Tu es sure de vouloir annuler cette livraison ?')">Annuler</a>
+                        <a href="{{ path('commande_proprietaire_supp',{'id':d.id})}}" class="btn btn-outline-danger btn-sm d-block" style="width: 100px" onclick="return confirm('Tu es sure de vouloir supprimer cette ?')">Supprimer</a>
+                    </td>
+                    <td>
+                        {% if d.livraison == "encours" %}
+                            En cours
+                        {% else %} 
+                            N'est pas envoyé  
+                        {% endif %}    
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        {% endfor %}
+        {% else %}
+        <tbody>
+                <tr>
+                    <td scope="col" colspan="5">Aucune commande </td>
+                </tr>
+        </tbody>                     
+        {% endif %}
+        
+        </table>
+        
+        <div class:"navigation">
+            {{ knp_pagination_render(page)}}
+        </div> 
+    </div>
+</div>
+{% endblock %}

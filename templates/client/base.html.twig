@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html>
+   <head>
+        <meta charset="UTF-8">
+        <script>
+          const idd='{{app.user.id is defined ? app.user.id:"guest"}}'
+          console.log(idd)
+            if(idd!=='guest')
+            {
+              if(JSON.parse(localStorage.getItem("my_cart_infos")).filter(x=>x.id=="guest").length)
+                             {      let strg=JSON.parse(localStorage.getItem("my_cart_infos"));
+                                   console.log(JSON.parse(localStorage.getItem("my_cart_infos")).filter(x=>x.id=="guest"));
+                                    if(!JSON.parse(localStorage.getItem("my_cart_infos")).filter(x=>x.id==idd).length)
+                                       {
+                                            console.log(1)
+                                          
+                                           let crt={id:idd,items:strg.filter(x=>x.id=="guest")[0].items};
+                                         
+                                           strg.push(crt);
+                                       }  
+                                    else{
+                                        console.log(2)
+                                       let arr1=strg.filter(x=>x.id=="guest")[0].items;
+                                       
+                                       let arr2=strg.filter(x=>x.id==idd)[0].items;
+                                     
+                                        let ar=(arr1.length>arr2.length)?arr1:arr2;
+                                       let av=(ar==arr1)?arr2:arr1;
+                                       let av_id=av.map(x=>x.id);
+                                       for(i in ar)
+                                       {
+                                         if(av_id.indexOf(ar[i].id)!==-1)
+                                         {
+                                           ar[i].qt=Math.min(ar[i].qt*1 + av[av_id.indexOf(ar[i].id)].qt*1,ar[i].stock );
+                                           av.splice(av_id.indexOf(ar[i].id),1)
+                                         }
+
+                                       }
+
+                                       ar=ar.concat(av)
+  
+                                       strg.splice(strg.map(x=>x.id).indexOf(idd),1);
+                                       strg.push({id:idd,items:ar});
+                                    }
+                                    strg.splice(strg.map(x=>x.id).indexOf("guest"),1);
+                                    localStorage.setItem("my_cart_infos",JSON.stringify(strg));
+
+                             }
+            }
+          
+          
+          
+            if(sessionStorage.getItem('redirect') && idd!=='guest')
+               { 
+                 sessionStorage.clear('redirect')
+                 window.location.href='/cart'
+               }
+        </script>
+        <title>{% block title %}{{pagetitle}}{% endblock %}</title>
+        <link href="https://fonts.googleapis.com/css?family=Rubik:400,700|Crimson+Text:400,400i" rel="stylesheet">
+
+        <link rel="stylesheet" href="{{ asset('fonts/icomoon/style.css') }}">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+        <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/magnific-popup.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/jquery-ui.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/owl.carousel.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/owl.theme.default.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/aos.css') }}">
+
+        <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>  
+        {% block stylesheets %}
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+        {% endblock %}
+        <style>
+            .grid{
+                display: grid;
+                grid-template-columns: repeat(4, 1fr);
+                grid-gap: 50px;
+            }
+        </style>
+    </head>
+    <body>
+    <div class="site-wrap">
+        {% block header %}
+            <div class="site-navbar py-2">
+
+                <div class="search-wrap">
+                    <div class="container">
+                    <a href="#" class="search-close js-search-close"><span class="icon-close2"></span></a>
+                    <form action="#" method="post">
+                        <input type="text" class="form-control" placeholder="Search keyword and hit enter...">
+                    </form>
+                    </div>
+                </div>
+
+                <div class="container">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div class="logo">
+                            <div class="site-logo">
+
+                          
+                            <a href="{{ path('home') }}">  <img src="{{asset('images/logosite.png')}}" alt="" style="max-height:50px"/></a>
+
+                            </div>
+                        </div>
+                        <div class="main-nav d-none d-lg-block">
+                            <nav class="site-navigation text-right text-md-center" role="navigation">
+                            <ul class="site-menu js-clone-nav d-none d-lg-block" >
+                                <li class="{{ app.request.get('_route') == 'home' ? 'active' }}"><a href="{{ path('home') }}" class="hyper">Acceuil</a></li>
+                                <li class="{{ app.request.get('_route') == 'shop' or app.request.get('_route') == 'HandleSearch'  and not categorie ? 'active' }}"><a href="{{ path('shop') }}"class="hyper">Produits</a></li>                            
+                                <li class="{{ (categorie is defined and categorie) or  app.request.get('_route') == 'cat' ? 'active' }} has-children">
+                                <a href="#" class="hyper">Catégorie</a>
+                                <ul class="dropdown" id='categories'>
+                                </ul>
+                                </li>
+                                <li class="{{ app.request.get('_route') == 'about' ? 'active' }}"><a href="{{ path('about') }}" class="hyper">À PROPOS</a></li>
+                                {% if app.user%}
+                                <li class="{{ app.request.get('_route') == 'contactclient' ? 'active' }}"><a href="{{ path('contactclient') }}" class="hyper">Contact</a></li>
+                                {% endif %}
+                            </ul>
+                            </nav>
+                        </div>
+                          <nav class="site-navigation text-right text-md-center" role="navigation">
+                          <ul class="site-menu js-clone-nav d-none d-lg-block">
+                        
+                            <a href="#" class="icons-btn d-inline-block js-search-open"><span class="icon-search"></span></a>
+                            <a href="{{path('cart')}}" class="icons-btn d-inline-block bag" id="my-cart">
+                            <span class="icon-shopping-bag"></span>
+                            <span class="number">0</span>
+                            </a>
+                            <a href="#" class="site-menu-toggle js-menu-toggle ml-3 d-inline-block d-lg-none"><span
+                                class="icon-menu"></span></a>
+                                  <li class="has-children">
+                            {% if not app.user %}
+                            <a>Inscription</a>
+                            <ul class="dropdown">
+                            <li><a href="{{ path('inscription') }}">Client</a></li>
+                            <li><a href="{{ path('security_registration')}}">Parapharmacie</a></li>
+                            {% endif %}
+                            </ul>
+                            </li>
+                            {% if not app.user %}    
+                            <script>  </script>
+                            <li class="connexion">
+                            <a href="{{ path('app_login') }}">Connexion</a></li>
+                            </ul>
+                            {% else %}
+                            <script> 
+                            
+                            
+                            </script>
+                        </nav>
+                          <nav class="site-navigation text-right text-md-center" role="navigation">
+                              <ul class="site-menu js-clone-nav d-none d-lg-block">
+                              <li class="has-children">
+                            <a>{{app.user.nom}}</a>
+                            <ul class="dropdown">
+                            <li><a href="{{ path('client_commande') }}">Mes Commandes</a></li>
+                            <li><a href="{{path('ClientAccount')}}">Compte</a></li>
+                            <li><a href="{{ path('app_logout') }}">Deconnexion</a></li>
+                            </ul>
+                            </li>
+                            </ul>
+                            </nav>
+                            {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% block nav %}
+            <div class="bg-light py-3">
+              <div class="container">
+                <div class="row">
+                  <div class="col-md-12 mb-0">
+                    <a href="{{ path('home_proprietaire') }}">Home</a> <span class="mx-2 mb-0">/</span>
+                    <strong class="text-black">{{pagetitle}}</strong>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {% endblock %}
+        {% endblock %}
+        {% block body %}{% endblock %}
+        {% block footer %}
+            <footer class="site-footer">
+              <div class="container">
+                <div class="row">
+                  <div class="col-md-6 col-lg-3 mb-4 mb-lg-0">
+
+                    <div class="block-7">
+                      <h3 class="footer-heading mb-4">A propos de nous</h3>
+                      <p>Le site web ParaClic est fait pour faciliter l'achat des médicament ou les produit médicaux, dont lequel par un seul clic vous pouvez achetez ce que vous voulez </p>
+                        <u> <a href="{{ path('about') }}" class="text-primary">Nous connaitre mieux</a></u>
+
+                    </div>
+
+                  </div>
+                  <div class="col-lg-3 mx-auto mb-5 mb-lg-0">
+                    <h3 class="footer-heading mb-4">Quick Links</h3>
+                    <ul class="list-unstyled" id='quicklinks'>
+        
+                    </ul>
+                   
+                  </div>
+
+                  <div class="col-md-6 col-lg-3">
+                    <div class="block-5 mb-5">
+                      <h3 class="footer-heading mb-4">Contact Info</h3>
+                      <ul class="list-unstyled">
+                        <li class="address">Lot chabab, Bd ALMAQDIS et rue ALISSRAE N°7 Hay El Qods, Oujda, MAROC</li>
+                        <li class="phone"><a>06 94 84 77 10</a></li>
+                        <li class="email">paraclic@gmail.com</li>
+                      </ul>
+                    </div>
+
+
+                  </div>
+                </div>
+                
+
+                </div>
+              </div>
+            </footer>
+        {% endblock %}
+    </div>
+        {% block javascripts %}
+        <script>
+          axios.get('{{path("categories",{"limit":true})}}').then(function(response){
+            let categories=document.getElementById('categories')
+            let quicklinks=document.getElementById('quicklinks')
+            let url="{{path('cat', {'name':'X'})}}"
+            for( i in response.data.c)
+            {
+            let li=document.createElement('li');
+            let href=document.createElement('a');
+                  let categorie_name=response.data.c[i]
+                  href.href=url.replace('X',categorie_name)
+                  href.innerHTML=categorie_name
+                  li.append(href)
+                  categories.append(li)
+                  let li2=document.createElement('li');
+                  let href2=document.createElement('a');  
+                  href2.href=url.replace('X',categorie_name) 
+                  href2.innerHTML=categorie_name 
+                  li2.append(href2)    
+                  quicklinks.append(li2)
+
+            }
+            if(response.data.haveMore)
+            {let li=document.createElement('li');
+            let showAll=document.createElement('a');
+            showAll.href='{{path("categories",{"limit":0})}}';
+            showAll.innerHTML='Afficher tout';
+            li.append(showAll)
+            categories.append(li)
+            let li2=document.createElement('li');
+            //<u>
+            let h=document.createElement('a')
+            //h.href="{{ path('shop') }}"
+            h.href='{{path("categories",{"limit":0})}}';
+            h.className='text-primary'
+            h.innerHTML='Voir plus dans le marquet'
+            li2.append(h)
+            quicklinks.append(li2)
+            
+            }
+            //console.log(response.data)
+    
+            })
+        </script>
+            <script>
+            
+               // console.log(idd);
+             let storage=localStorage.getItem("my_cart_infos");
+             let cart=document.getElementById("my-cart");
+if(!storage) {cart.childNodes[3].innerHTML=0;}
+else { 
+  
+
+       if( JSON.parse(storage).map( x=> x.id).indexOf(idd)!==-1)
+    {cart.childNodes[3].innerHTML=JSON.parse(storage).filter( x=>x.id==idd).map(y=>y.items)[0].reduce(function(acc,v){return {qt:acc.qt*1 +v.qt*1}}).qt; }
+	
+	 else cart.childNodes[3].innerHTML=0;
+}
+	   
+	   
+            
+            </script>
+                  <script src="{{ asset('js/jquery-3.3.1.min.js') }}"></script>
+                  <script src="{{ asset('js/jquery-ui.js') }}"></script>
+                  <script src="{{ asset('js/popper.min.js') }}"></script>
+                  <script src="{{ asset('js/bootstrap.min.js') }}"></script>
+                  <script src="{{ asset('js/owl.carousel.min.js') }}"></script>
+      
+
+            
+        {% endblock %}
+    </body>
+</html>

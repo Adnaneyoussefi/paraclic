@@ -1,0 +1,156 @@
+{% extends'admin/base.html.twig'%}
+{% block title %}Accueil{% endblock %}
+{% block body %}
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" />
+<div class="container">
+    <div class="row">
+     <div class="col-md-3">
+      <div class="card-counter info">
+        <i class="fa fa-users"></i>
+        <span class="count-numbers">  {{ totalpharma }}</span>
+        <span class="count-name">ParaPharmacie</span>
+      </div>
+    </div>
+    
+    <div class="col-md-3">
+      <div class="card-counter success">
+        <i class="fa fa-users"></i>
+        <span class="count-numbers">{{totalclients}}</span>
+        <span class="count-name">Client</span>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="card-counter danger">
+        <i class="fa fa-eye"></i>
+        <span class="count-numbers">{{nombre_visite}}</span>
+        <span class="count-name">Vues</span>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="card-counter primary">
+        <i class="fa fa-envelope-o"></i>
+        <span class="count-numbers">{{reclamation}}</span>
+        <span class="count-name">Reclamations</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+ <div class="site-section">
+      <div class="container">
+        <div style="width :65%">
+         <canvas id="line-chart" width="800" height="450"></canvas>
+         <canvas id="pie-chart" width="900" height="450"></canvas>
+        </div>
+        <div style="position:relative;  top:450px;">
+                <table class="zui-table">
+                <thead>
+                        <tr>
+                            <th></th>
+                            <th>Client</th>
+                            <th>ParaPharmacie</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td > 
+                    <label style="background-color: #DAA520" >Oriental</label>
+                            </td>
+                            <td>{{orientalC}}</td>
+                            <td>{{orientalP}}</td>
+                        </tr>
+                        <tr>
+                          <td > 
+                    <label style="background-color: #F08080" >Tanger-tetouan-Al hoceima</label>
+                            </td>
+                            <td>{{TangerCli}}</td>
+                            <td>{{TangerProp}}</td>
+                        </tr>
+                        <tr>
+                        <td>
+                    <label style="background-color: #3cba9f" > Fes-Mekens</label>
+                            </td>
+                            <td>{{FesMeknesCli}}</td>
+                            <td>{{FesMeknesProp}}</td>
+                        </tr>
+                        <tr>
+                            <td>
+                    <label style="background-color: #98FB98" > Rabat-sale-kenitra</label>
+                            </td>
+                            <td>{{RabatSaleKenitraCli}}</td>
+                            <td>{{RabatSaleKenitraProp}}</td>
+                        </tr>
+                        <tr>
+                            <td>
+                    <label style="background-color: #DDA0DD" > Casablanca-Settat</label>
+                    </td>
+                            <td>{{CasablancaSettatCli}}</td>
+                            <td>{{CasablancaSettatProp}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+        </div>
+      </div>
+  </div>
+          <script>
+         new Chart(document.getElementById("line-chart"), {
+  type: 'line',
+  data: {
+    labels: ["Janvier","Fevrier","Mars","Avril","Mai","Juin","Juillet","Aout","Septembre","Octobre","Novembre","Decembre"],
+    datasets: [{ 
+        data: [  {% for  user in users %}
+             {{user}},
+                       
+              
+        {% endfor %}],
+        label: "Client",
+        borderColor: "lime",
+        fill: false
+      }, { 
+        data: [{% for  p in p %}
+             {{p}},
+                       
+              
+        {% endfor %}],
+        label: "Parapharmacie",
+        borderColor: "aqua",
+        fill: false
+      },
+    ]
+  },
+  options: {
+    title: {
+      display: true,
+      text: 'Nombre des inscriptions (Par mois)'
+    }
+  }
+});
+          new Chart(document.getElementById("pie-chart"), {
+    type: 'pie',
+    data: {
+      labels: ["Oriental", "Tanger-tetouan-Al hoceima	", "Fes-Mekens", "Rabat-sale-kenitra", "Casablanca-Settat"],
+      datasets: [{
+        backgroundColor: ["#DAA520", "#F08080","#3cba9f","#98FB98","#DDA0DD"],
+        data: [{{orientaltotal}},{{tangerTotale}},{{FesMeknesTotale}},{{RabatSaleKenitraTotale}},{{CasablancaSettatTotale}}]
+      }]
+    },
+    options: {
+      legend: { display: false },
+      title: {
+        display: true,
+        text: 'Nombre des Membre par ville'
+      }
+    }
+});
+          </script>   
+{% endblock %}

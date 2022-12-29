@@ -1,0 +1,77 @@
+{% extends 'client/base.html.twig' %}
+{% block title %}Mes commandes{% endblock %}
+{% block body %}
+{% set i=1 %}
+<div class="site-section">
+    <div class="container">
+
+        <table class="table table-bordered">
+            <thead>
+                <tr class="table-active">
+                    <td class="text-muted">Description</td>
+                    <td class="text-muted">Adresse Livraison</td>
+                    <td class="text-muted">Prix total</td>
+                    <td class="text-muted">Status</td>
+                    <td class="text-muted">Total</td>
+                </tr>  
+            </thead>  
+            <tbody>   
+            {% for commande in page %}
+                <tr> 
+                    <td colspan="5"><strong>No commande: {{commande.nb}}</strong> <span style="color:#999">{{ commande.date | date('d/m/Y') }}</span></td>
+                    
+                </tr>
+            </tbody>    
+            <tbody>   
+            {% for d in commande.produits %}     
+                <tr>
+                    <td>
+                        <img src={{ asset('images/' ~ d.produit.image) }} alt="Image" style="width: 120px;">
+                        <div class="d-inline-block">
+                        <div> <strong>{{ d.produit.nom }}</strong></div>
+                        <div><span style="color:#999">QTE</span> {{ d.quantite }}</div>
+                        <div><span style="color:#999">Prix unitaire</span> {{ d.produit.prixtva + d.produit.prixht }} Dhs</div>
+                        <div><span style="color:#999">Parapharmacie</span> <a href="{{ path('profile', {'id':d.produit.proprietaire.id})}}">{{ d.produit.proprietaire.nompharmacie }}</a></div>
+                        </div>
+                    </td>
+
+                    {% if loop.first %}
+                    <td rowspan={{commande.produits|length}} style="max-width: 390px">
+                        <div class="d-table-row"><span style="color:#999" class="d-table-cell pr-2">Nom complet:</span> {{ commande.nom }} {{ commande.prenom }}</div>
+                        <div class="d-table-row"><span style="color:#999" class="d-table-cell pr-2">Tel:</span> {{ commande.client.tel }}</div>
+                        <div class="d-table-row"><span style="color:#999" class="d-table-cell pr-2">Adresse de réception:</span> {{ commande.adresselivraison }}</div>
+                        <div class="d-table-row"><span style="color:#999" class="d-table-cell pr-2">Ville:</span> {{ commande.ville }}</div>
+                        <div class="d-table-row"><span style="color:#999" class="d-table-cell pr-2">Code postal:</span> {{ commande.codepostal }}</div>
+                    </td>
+                    {% endif %}
+                                        
+                    <td><strong>{{ (d.produit.prixtva + d.produit.prixht) * d.quantite }} Dhs</strong></td>
+                    <td>
+                        {% if d.livraison == "encours" %}
+                            En cours
+                        {% elseif d.livraison == "oui" %} 
+                            Livré 
+                        {% else %}  
+                            N'est pas livré  
+                        {% endif %} 
+                    </td>
+                    {% if loop.first %}
+                    <td rowspan={{commande.produits|length}}>
+                        {% for nbr in prixTotal %}
+                            {% if d.commande.id == nbr.c_id %}
+                                <strong class="text-danger">{{nbr.x}} Dhs</strong>
+                            {% endif %}    
+                        {% endfor %}
+                    </td>
+                    {% endif %}
+                </tr>
+            {% endfor %}
+            {% endfor %}
+            </tbody>
+        </table>
+        <div class:"navigation">
+            {{ knp_pagination_render(page)}}
+        </div> 
+    </div>
+</div>
+{% endblock %}

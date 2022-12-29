@@ -1,0 +1,291 @@
+{% extends 'client/index.html.twig' %}
+
+{% block body %}
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+<style>
+.emp-profile{
+    padding: 3%;
+    margin-top: 3%;
+    margin-bottom: 3%;
+    border-radius: 0.5rem;
+    background: #F0F2F1;
+}
+.profile-img{
+    text-align: center;
+}
+.profile-img img{
+    width: 70%;
+    height: 100%;
+}
+.profile-img .file {
+    position: relative;
+    overflow: hidden;
+    margin-top: -20%;
+    width: 70%;
+    border: none;
+    border-radius: 0;
+    font-size: 15px;
+    background: #212529b8;
+}
+.profile-img .file input {
+    position: absolute;
+    opacity: 0;
+    right: 0;
+    top: 0;
+}
+.profile-head h5{
+    color: #333;
+}
+.profile-head h6{
+    color: #0062cc;
+}
+.profile-edit-btn{
+    border: none;
+    border-radius: 1.5rem;
+    width: 70%;
+    padding: 2%;
+    font-weight: 600;
+    color: #6c757d;
+    cursor: pointer;
+}
+.proile-rating{
+    font-size: 12px;
+    color: #818182;
+    margin-top: 5%;
+}
+.proile-rating span{
+    color: #495057;
+    font-size: 15px;
+    font-weight: 600;
+}
+.profile-head .nav-tabs{
+    margin-bottom:5%;
+}
+.profile-head .nav-tabs .nav-link{
+    font-weight:600;
+    border: none;
+}
+.profile-head .nav-tabs .nav-link.active{
+    border: none;
+    border-bottom:2px solid #0062cc;
+}
+.profile-work{
+    padding: 14%;
+    margin-top: -15%;
+}
+.profile-work p{
+    font-size: 12px;
+    color: #818182;
+    font-weight: 600;
+    margin-top: 10%;
+}
+.profile-work a{
+    text-decoration: none;
+    color: #495057;
+    font-weight: 600;
+    font-size: 14px;
+}
+.profile-work ul{
+    list-style: none;
+}
+.profile-tab label{
+    font-weight: 600;
+}
+.profile-tab p{
+    font-weight: 600;
+    color: #0062cc;
+}
+</style>
+<div class="container emp-profile">
+            <form method="post">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="profile-img">
+                            <img src="{{asset('images/logo-pharma.png')}}" alt=""/>
+                            
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="profile-head">
+                                    <h5>
+                                         ParaPharmacie {{proprietaire.nomPharmacie}}
+                                    </h5>
+                                    <h6>
+                                        PROPRIETAIRE : {{proprietaire.user.nom}} {{proprietaire.user.prenom}}
+                                    </h6>
+                                    <p class="proile-rating"><span>Inscrit le : </span>{{proprietaire.user.registredAt|date("d/m/Y")}} </p>
+                            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">A propos</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+               
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                    </div>
+                    <div class="col-md-8">
+                        <div class="tab-content profile-tab" id="myTabContent">
+                            <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label>Email</label>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <p>{{proprietaire.user.email}}</p>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label>Telephone</label>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <p>{{proprietaire.tel}}</p>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label>Adresse</label>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <p>{{proprietaire.adresse}}</p>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label>Ville</label>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <p>{{proprietaire.Ville}}</p>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label>Region</label>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <p>{{proprietaire.region}}</p>
+                                            </div>
+                                        </div>
+                            </div>
+                           
+                        </div>
+                    </div>
+                </div>
+            </form>           
+        </div>
+        {% if produits %}
+       <center> <h3> Les produits qui correspond a cette Parapharmacie </h3></center>
+      <div class="container">
+         <div class="row">
+            {% for produits in page %}
+              <div class="col-lg-3 col-md-6 mt-3">
+                <div class="card">
+                  <div class="card-body text-center item mb-4" id="p-{{produits.id}}" >
+                    <img src="{{asset('images/'~produits.image)}}" alt="Image" class="cart-item" style="max-height:150px">
+                    <h3 class="text-dark" id="{{produits.id}}">{{produits.nom}}</a></h3>
+                    <a href=" {{path('details', {'id':produits.id})}}" class="btn btn-outline-primary btn-sm"> Details </a> 
+                    <p class="price" data-price="{{produits.prixtva}}" data-pr="{{produits.proprietaire.id}}" data-max='{{produits.quantite}}' style="font-weight:bold;color:#008CB6">{{produits.prixtva + produits.prixht}} DH ttc</p>
+                    <a href="#" class="btn btn-info btn-sm" class='additem' id='b{{produits.id}}'>Ajouter au panier</a>
+                  </div>
+                </div>
+              </div>
+
+
+         {% endfor %}
+
+         {% else %}
+                <center> <h3> Cette Parapharmacie n'a aucun produit  </h3></center>
+        {% endif %}
+         </div> <br>
+         <div class:"navigation">
+              {{ knp_pagination_render(page)}}
+              </div>
+         </div>
+
+
+
+
+<script>
+  console.log(idd);
+	   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//   console.log(JSON.parse(localStorage.getItem("my_cart_infos")).filter( x=>x.id==idd).map(y=>y.items)[0].reduce(function(acc,v){return {qt:acc.qt+v.qt}}).qt);
+  var addtoCart=function(){
+  let storage=localStorage.getItem("my_cart_infos");
+   //let parent=this.parentElement.getAttribute("id");
+   console.log(this.getAttribute('id').replace('b','p-'))
+   //return
+   let data=document.getElementById(this.getAttribute('id').replace('b','p-'));
+   let prodName;
+   let prodId;
+   let prodPrice;
+   let prodImage;
+   let prodProp;
+   let stck;
+   let incr=1;
+    for (let i = 0; i < data.children.length; i++) {
+    switch (data.children[i].tagName)
+	{
+	  case 'H3':
+	  prodName=data.children[i].innerHTML;
+	  prodId=data.children[i].id;
+	  break;
+	  case 'IMG':
+	  prodImage= data.children[i].src;
+	  break;
+	  case 'P':
+	  prodPrice= data.children[i].dataset.price;
+    prodProp=data.children[i].dataset.pr;
+    stck=data.children[i].dataset.max;
+    console.log(data.children[i].dataset)
+	  break;
+	
+	}
+	}
+   let storage_data={prod_name:prodName,prop:prodProp,price:prodPrice,image:prodImage,id:prodId,qt:1,stock:stck};
+   let items_table=(!storage)?[]:JSON.parse(storage);
+     console.log(stck);
+   if( items_table.map(x=>x.id).indexOf(idd)==-1)
+   {  
+     
+	  items_table.push({id:idd,items:[storage_data]});
+   
+   }
+   else{
+     let index=items_table.map(x=>x.id).indexOf(idd);
+	 if( items_table[index].items.map(x=>x.id).indexOf(prodId)==-1 )
+     items_table[index].items.push(storage_data);
+	 else {
+     if(items_table[index].items[items_table[index].items.map(x=>x.id).indexOf(prodId)].qt<stck-1)
+     
+     {items_table[index].items[items_table[index].items.map(x=>x.id).indexOf(prodId)].qt++;incr--;}
+   }
+ 
+   }
+
+   localStorage.setItem("my_cart_infos", JSON.stringify(items_table));
+   alert(" product  has been added to your cart!!");
+   
+   //CartProdNumber();//update product numbers in the cart
+   let cart=document.getElementById("my-cart");
+  // cart.childNodes[3].innerHTML=cart.childNodes[3].innerHTML*1+incr;
+  if(storage && JSON.parse(storage).filter( x=>x.id==idd).length )
+   {cart.childNodes[3].innerHTML=JSON.parse(storage).filter( x=>x.id==idd).map(y=>y.items)[0].reduce(function(acc,v){return {qt:acc.qt*1 +v.qt*1}}).qt*1 +1}
+   else
+   {cart.childNodes[3].innerHTML++;}
+  
+  }
+  //Array.from(document.getElementsByClassName("cart-item")).forEach( function(item){   item.addEventListener("click",addtoCart)     }  )
+  Array.from(document.getElementsByClassName("btn btn-info btn-sm")).forEach( function(item){   item.addEventListener("click",addtoCart)     }  )
+  //////////////// Add an item to the cart ////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////////////////////
+  
+  </script>
+
+{% endblock %}

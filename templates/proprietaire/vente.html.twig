@@ -1,0 +1,96 @@
+{% extends 'proprietaire/base.html.twig' %}
+{% block title %}Vente{% endblock %}
+{% block body %}
+<div class="site-section">
+    <div class="container">
+{% for message in app.flashes('success') %}
+    <center><div class="alert alert-success alert-dismissible fade show" role="success">
+        {{ message }}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+        </div></center>
+        {% endfor %}
+        {{ form_start(form2, { 'attr' : {'class' : "form-inline"} }) }}    
+            {{ form_row(form2.categories.setRendered()) }}
+            {{ form_row(form2.expire.setRendered()) }}
+            {{ form_row(form2.epuise.setRendered()) }}
+            Prix: {{ form_widget(form2.min, { 'attr' : {'class' : "text-black mx-3"} }) }}
+            {{ form_widget(form2.max, { 'attr' : {'class' : "text-black"} }) }}
+                           
+            <button class="btn btn-primary btn-block btn-sm mt-2" type="submit">Appliquer</button>
+        {{ form_end(form2) }}
+        
+        <table class="table table-bordered">
+            <thead>
+                <tr class="table-active">
+                    <td>Description</td>
+                    <td>Adresse Livraison</td>
+                    <td>Prix total</td>
+                    <td>Total</td>
+                    <td>Action</td>
+                </tr>  
+            </thead>  
+            <tbody>  
+            {% if commandes %} 
+            {% for commande in page %}
+                <tr>
+                    <td colspan="5"><strong>No commande: {{ commande.id }}</strong> <span class="text-muted">{{ commande.date | date('d/m/Y') }}</span></td>
+                </tr>
+                <tr>
+                    <td colspan="5"><span class="text-primary">Email client :</span> {{ commande.client.user.email }}
+                    </td>
+                </tr>
+            </tbody>    
+            <tbody>   
+            {% for d in commande.produits %}     
+                <tr>
+                    <td>
+                        <img src={{ asset('images/' ~ d.produit.image) }} alt="Image" style="width: 120px;">
+                        <div class="d-inline-block">
+                        <div><strong>{{ d.produit.nom }}</strong></div>
+                        <div><span style="color:#999">QTE</span> {{ d.quantite }}</div>
+                        <div><span style="color:#999">Prix unitaire</span> {{ d.produit.prixtva + d.produit.prixht }} Dhs</div>
+                        </div>
+                    </td>
+
+                    {% if loop.first %}
+                    <td rowspan={{commande.produits|length}} style="max-width: 390px">
+                        <div class="d-table-row"><span style="color:#999" class="d-table-cell pr-2">Nom complet:</span> {{ commande.nom }} {{ commande.prenom }}</div>
+                        <div class="d-table-row"><span style="color:#999" class="d-table-cell pr-2">Tel:</span> {{ commande.client.tel }}</div>
+                        <div class="d-table-row"><span style="color:#999" class="d-table-cell pr-2">Adresse de réception:</span> {{ commande.adresselivraison }}</div>
+                        <div class="d-table-row"><span style="color:#999" class="d-table-cell pr-2">Ville:</span> {{ commande.ville }}</div>
+                        <div class="d-table-row"><span style="color:#999" class="d-table-cell pr-2">Code postal:</span> {{ commande.codepostal }}</div>
+                    </td>
+                    {% endif %}
+                                        
+                    <td><strong>{{ (d.produit.prixtva + d.produit.prixht) * d.quantite }} Dhs</strong></td>
+                    {% if loop.first %}
+                    <td rowspan={{commande.produits|length}}>
+                        {% for nbr in prixTotal %}
+                            {% if d.commande.id == nbr.c_id %}
+                                <strong class="text-danger">{{nbr.x}} Dhs</strong>
+                            {% endif %}    
+                        {% endfor %}
+                    </td>
+                    {% endif %}
+                    <td>
+                        <a href="{{ path('vente_proprietaire_annuler',{'id':d.id})}}" class="btn btn-outline-warning btn-sm d-block mb-2" style="width: 100px" onclick="return confirm('Tu es sure de vouloir annuler le statut livré ?')">Annuler</a>
+                    </td>
+                </tr>
+            {% endfor %}
+            {% endfor %}
+            {% else %}
+        <tbody>
+                <tr>
+                    <td scope="col" colspan="5">Aucune vente </td>
+                </tr>
+        </tbody>                     
+        {% endif %}
+            </tbody>
+        </table>
+        <div class:"navigation">
+            {{ knp_pagination_render(page)}}
+        </div> 
+    </div>
+</div>
+{% endblock %}
