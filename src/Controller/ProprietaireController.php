@@ -80,9 +80,9 @@ class ProprietaireController extends AbstractController
         ->join('D.produit','p')
         ->join('D.commande','C')
         ->where('p.proprietaire = :prop')
-        ->andwhere('MONTH(C.date) = :date')
+        //->andwhere('MONTH(C.date) = :date')
         ->setParameter('prop', $user->getProprietaire())
-        ->setParameter('date',$j)
+        //->setParameter('date',$j)
         ->getQuery()
         ->getResult();
         array_push($w,$us);
