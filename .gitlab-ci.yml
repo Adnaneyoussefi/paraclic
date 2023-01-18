@@ -14,9 +14,6 @@ build:
     script:
         - export APP_ENV=prod
         - composer install --no-dev --optimize-autoloader
-        - yarn install
-        - yarn encore production
-        - rm -r node_modules
         - mkdir -p var && chmod -R 777 var
 
 deploy:
